@@ -1,0 +1,20 @@
+# Use official Tomcat with OpenJDK
+FROM tomcat:10.1-jdk17
+
+# Remove default webapps
+RUN rm -rf /usr/local/tomcat/webapps/*
+
+# Build WAR inside the container (Render runs Docker build in Linux)
+COPY . /app
+WORKDIR /app
+
+# Install Maven (if needed) and build the WAR
+RUN apt-get update && apt-get install -y maven \
+    && mvn clean package
+
+# Copy the WAR to Tomcat
+RUN cp target/demo-1.0-SNAPSHOT.war /usr/local/tomcat/webapps/ROOT.war
+
+EXPOSE 8080
+
+CMD ["catalina.sh", "run"]
