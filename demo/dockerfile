@@ -19,8 +19,8 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/* && \
     rm -rf /app
 
-# Optional: Copy custom server.xml to fix shutdown warnings
-COPY server.xml /usr/local/tomcat/conf/server.xml
+# Fix shutdown warnings by disabling shutdown port
+RUN sed -i 's/port="8005"/port="-1"/' /usr/local/tomcat/conf/server.xml
 
 EXPOSE 8080
 CMD ["catalina.sh", "run"]
